@@ -4,7 +4,7 @@ export default function Members() {
   const [members, setMembers] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/members")
+    fetch("http://127.0.0.1:8000/members")
       .then((res) => res.json())
       .then((data) => setMembers(data));
   }, []);

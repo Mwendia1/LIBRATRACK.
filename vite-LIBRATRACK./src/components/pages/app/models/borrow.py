@@ -1,4 +1,4 @@
-# models/borrow.py
+
 from sqlalchemy import Column, Integer, DateTime, Boolean, String, ForeignKey
 from sqlalchemy.sql import func
 from database import Base

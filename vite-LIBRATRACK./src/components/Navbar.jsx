@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function Navbar() {
+function Navbar() {
   return (
     <nav style={styles.nav}>
       <h2>📚 LibraTrack</h2>
@@ -26,5 +26,9 @@ const styles = {
   links: {
     display: "flex",
     gap: "20px",
+    paddingTop: "4px",
+    position: "fixed",
+    right: "25px",
   },
 };
+export default Navbar;

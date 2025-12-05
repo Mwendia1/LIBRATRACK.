@@ -16,7 +16,7 @@ export default function AddBook() {
   function handleSubmit(e) {
     e.preventDefault();
 
-    fetch("http://localhost:8000/books", {
+    fetch("", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

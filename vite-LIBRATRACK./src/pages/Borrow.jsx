@@ -9,7 +9,7 @@ export default function Borrow() {
   });
 
   useEffect(() => {
-    fetch("http://localhost:8000/books")
+    fetch("https://openlibrary.org/search.json?q=the+hobbit")
       .then((r) => r.json())
       .then((data) => setBooks(data));
 
@@ -82,5 +82,10 @@ const styles = {
     flexDirection: "column",
     gap: "10px",
     width: "250px",
+  },
+  button: {
+    position: "fixed",
+    right: "20px",
+    paddingTop: "4px",
   },
 };

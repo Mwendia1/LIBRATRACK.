@@ -20,6 +20,7 @@ export default function Books() {
         {books.map((book, index) => (
           <BookCard key={book.key || index} book={book} />
         ))}
+
       </div>
     </div>
   );
