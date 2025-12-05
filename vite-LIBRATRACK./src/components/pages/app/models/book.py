@@ -1,11 +1,12 @@
-from sqlalchemy import Column, Integer, String, Boolean
-from app.database import Base
+from sqlalchemy import Column, Integer, String
+from database import Base
 
 class Book(Base):
     __tablename__ = "books"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String)
-    author = Column(String)
-    year = Column(Integer)
-    available = Column(Boolean, default=True)
+    title = Column(String, nullable=False)
+    author = Column(String, nullable=False)
+
+    def __repr__(self):
+        return f"<Book(id={self.id}, title={self.title}, author={self.author})>"

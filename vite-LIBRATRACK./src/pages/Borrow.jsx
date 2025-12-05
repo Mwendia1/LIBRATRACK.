@@ -1,66 +1,68 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Borrow() {
   const [books, setBooks] = useState([]);
   const [members, setMembers] = useState([]);
-  const [form, setForm] = useState({
-    book_id: "",
-    member_id: "",
-  });
+  const [selectedBook, setSelectedBook] = useState("");
+  const [selectedMember, setSelectedMember] = useState("");
+  const [borrows, setBorrows] = useState([]);
+
+  const fetchBooks = () => {
+    fetch("https://openlibrary.org/search.json?q=the+hobbit")
+      .then((res) => res.json())
+      .then((data) => setBooks(data.docs))
+      .catch((err) => console.error("Error fetching books:", err));
+  };
+
+  const fetchMembers = () => {
+    fetch("http://localhost:8000/members")
+      .then((res) => res.json())
+      .then((data) => setMembers(data))
+      .catch((err) => console.error("Error fetching members:", err));
+  };
 
   useEffect(() => {
-    fetch("https://openlibrary.org/search.json?q=the+hobbit")
-      .then((r) => r.json())
-      .then((data) => setBooks(data));
-
-    fetch("http://localhost:8000/members")
-      .then((r) => r.json())
-      .then((data) => setMembers(data));
+    fetchBooks();
+    fetchMembers();
   }, []);
 
-  function handleChange(e) {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  }
-
-  function handleSubmit(e) {
+  const handleBorrow = (e) => {
     e.preventDefault();
+    if (!selectedBook || !selectedMember) return;
 
-    fetch("http://localhost:8000/borrow", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form),
-    }).then(() => {
-      alert("Book borrowed!");
-    });
-  }
+    const bookObj = books.find((b) => b.key === selectedBook);
+    const memberObj = members.find((m) => m.id === parseInt(selectedMember));
+
+    setBorrows([
+      ...borrows,
+      { book: bookObj, member: memberObj, borrowed_at: new Date() },
+    ]);
+
+    alert(`"${bookObj.title}" borrowed by ${memberObj.name}!`);
+    setSelectedBook("");
+    setSelectedMember("");
+  };
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>🔄 Borrow Book</h2>
+      <h2>📚 Borrow Book</h2>
 
-      <form onSubmit={handleSubmit} style={styles.form}>
+      <form onSubmit={handleBorrow} style={styles.form}>
         <select
-          name="book_id"
-          value={form.book_id}
-          onChange={handleChange}
+          value={selectedBook}
+          onChange={(e) => setSelectedBook(e.target.value)}
         >
           <option value="">Select Book</option>
           {books.map((b) => (
-            <option key={b.id} value={b.id}>
-              {b.title}
+            <option key={b.key} value={b.key}>
+              {b.title} by {b.author_name?.[0] || "Unknown"}
             </option>
           ))}
         </select>
 
         <select
-          name="member_id"
-          value={form.member_id}
-          onChange={handleChange}
+          value={selectedMember}
+          onChange={(e) => setSelectedMember(e.target.value)}
         >
           <option value="">Select Member</option>
           {members.map((m) => (
@@ -70,8 +72,18 @@ export default function Borrow() {
           ))}
         </select>
 
-        <button>Borrow</button>
+        <button type="submit">Borrow</button>
       </form>
+
+      <h3>📖 Borrowed Books</h3>
+      <ul>
+        {borrows.map((b, idx) => (
+          <li key={idx}>
+            {b.book.title} — borrowed by {b.member.name} at{" "}
+            {b.borrowed_at.toLocaleString()}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
@@ -81,11 +93,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     gap: "10px",
-    width: "250px",
-  },
-  button: {
-    position: "fixed",
-    right: "20px",
-    paddingTop: "4px",
+    width: "300px",
+    marginBottom: "20px",
   },
 };

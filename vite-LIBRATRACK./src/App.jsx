@@ -4,6 +4,7 @@ import Books from "./pages/Books";
 import AddBook from "./pages/AddBook";
 import Members from "./pages/Members";
 import Borrow from "./pages/Borrow";
+import register from "./pages/register";
 
 export default function App() {
   return (
