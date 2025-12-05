@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LibraTrack</title>
+</head>
+<body>
+  <h1>LibraTrack: The Hobbit Books</h1>
+  <div id="books"></div>
+
+  <script>
+    fetch("https://openlibrary.org/search.json?q=the+hobbit")
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById("books");
+        data.docs.forEach(book => {
+          const div = document.createElement("div");
+          div.innerHTML = `<h3>${book.title}</h3>
+                           <p>${book.author_name ? book.author_name.join(", ") : "Unknown author"}</p>`;
+          container.appendChild(div);
+        });
+      })
+      .catch(err => console.error("Error fetching books:", err));
+  </script>
+</body>
+</html>
